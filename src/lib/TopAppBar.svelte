@@ -25,20 +25,14 @@
 	];
 </script>
 
-<TopAppBar variant="static">
+<TopAppBar variant="fixed">
 	<Row>
 		<Section>
 			<Logo />
 		</Section>
 
 		<Section class="search-bar-container">
-			<Textfield
-				class="search-bar"
-				variant="outlined"
-				placeholder="Search..."
-				label="Search..."
-				bind:value={searchQuery}
-			>
+			<Textfield class="search-bar" variant="outlined" label="Search..." bind:value={searchQuery}>
 				<Icon class="material-icons" slot="leadingIcon">search</Icon>
 			</Textfield>
 		</Section>
@@ -69,16 +63,19 @@
 		width: 500px;
 		margin-right: 16px;
 		background-color: transparent !important;
-		border-radius: 5px;
-		border: 0.25px solid white;
 	}
 
 	:global(.search-bar-container) {
-		justify-content: center;
+		justify-content: center !important;
 	}
 
 	:global(.shopping-cart-button) {
 		color: #fff !important;
+	}
+
+	:global(.mdc-text-field--focused) {
+		border: 0.25px solid white;
+		border-radius: 5px;
 	}
 
 	.separator {

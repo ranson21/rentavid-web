@@ -5,7 +5,7 @@
 	import { assets } from '$app/paths';
 	import { page } from '$app/stores';
 
-	import { Row, Section, Title } from '@smui/top-app-bar';
+	import Toolbar from '@smui/top-app-bar';
 	import Drawer, { Content, Scrim, AppContent } from '@smui/drawer';
 	import IconButton from '@smui/icon-button';
 	import Menu, { SelectionGroup, SelectionGroupIcon } from '@smui/menu';
@@ -60,38 +60,37 @@
 	onMount(() => setTimeout(setMiniWindow, 0));
 
 	onMount(() => {
-		if (mainContent) {
-			mainContentGesture = new TinyGesture(mainContent, {
-				mouseSupport: false
-			});
-			let touchStartX = 0;
-			mainContentGesture.on('panstart', () => {
-				touchStartX = mainContentGesture.touchStartX;
-			});
-			mainContentGesture.on('swiperight', () => {
-				if (touchStartX <= 40) {
-					drawerOpen = true;
-				}
-			});
-		}
-
-		if (drawer) {
-			drawerGesture = new TinyGesture(drawer.getElement(), {
-				mouseSupport: false
-			});
-			drawerGesture.on('swipeleft', () => {
-				drawerOpen = false;
-			});
-		}
+		// if (mainContent) {
+		// 	mainContentGesture = new TinyGesture(mainContent, {
+		// 		mouseSupport: false
+		// 	});
+		// 	let touchStartX = 0;
+		// 	mainContentGesture.on('panstart', () => {
+		// 		touchStartX = mainContentGesture.touchStartX;
+		// 	});
+		// 	mainContentGesture.on('swiperight', () => {
+		// 		if (touchStartX <= 40) {
+		// 			drawerOpen = true;
+		// 		}
+		// 	});
+		// }
+		// if (drawer) {
+		// 	drawerGesture = new TinyGesture(drawer.getElement(), {
+		// 		mouseSupport: false
+		// 	});
+		// 	drawerGesture.on('swipeleft', () => {
+		// 		drawerOpen = false;
+		// 	});
+		// }
 	});
 
 	onDestroy(() => {
-		if (mainContentGesture) {
-			mainContentGesture.destroy();
-		}
-		if (drawerGesture) {
-			drawerGesture.destroy();
-		}
+		// if (mainContentGesture) {
+		// 	mainContentGesture.destroy();
+		// }
+		// if (drawerGesture) {
+		// 	drawerGesture.destroy();
+		// }
 	});
 
 	function routesEqual(a, b) {
@@ -136,94 +135,10 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/itmatters@2.0.1/index.css" />
 </svelte:head>
 
-<!-- <TopAppBar>
-	<Row>
-		<Section>
-			{#if miniWindow}
-				<IconButton class="material-icons" on:click={() => (drawerOpen = !drawerOpen)}
-					>menu</IconButton
-				>
-			{/if}
-			<Title
-				tag="a"
-				href="/"
-				on:click={() => (activeSection = undefined)}
-				style={miniWindow ? 'padding-left: 0;' : ''}
-			>
-				Rent-A-Vid
-			</Title>
-		</Section>
-		<Section align="end" toolbar style="color: var(--mdc-on-surface, #000);">
-			<div style="display: inline-block;">
-				<IconButton
-					on:click={() => themeMenu.setOpen(true)}
-					title="Pick a theme or toggle dark mode."
-				>
-					<Icon tag="svg" viewBox="0 0 24 24">
-						<path fill="currentColor" d={mdiPalette} />
-					</Icon>
-				</IconButton>
-				<Menu bind:this={themeMenu}>
-					<List>
-						<SelectionGroup>
-							<Item on:SMUI:action={() => (lightTheme = null)} selected={lightTheme == null}>
-								<SelectionGroupIcon>
-									<i class="material-icons">check</i>
-								</SelectionGroupIcon>
-								<Text>Follow System</Text>
-							</Item>
-							{#each [{ label: 'Light', value: true }, { label: 'Dark', value: false }] as item}
-								<Item
-									on:SMUI:action={() => (lightTheme = item.value)}
-									selected={lightTheme === item.value}
-								>
-									<SelectionGroupIcon>
-										<i class="material-icons">check</i>
-									</SelectionGroupIcon>
-									<Text>{item.label}</Text>
-								</Item>
-							{/each}
-						</SelectionGroup>
-						<Separator />
-						<SelectionGroup>
-							<Item on:SMUI:action={() => (theme = null)} selected={theme == null}>
-								<SelectionGroupIcon>
-									<i class="material-icons">check</i>
-								</SelectionGroupIcon>
-								<Text>Svelte</Text>
-							</Item>
-							{#each themes as item}
-								<Item on:SMUI:action={() => (theme = item.value)} selected={theme === item.value}>
-									<SelectionGroupIcon>
-										<i class="material-icons">check</i>
-									</SelectionGroupIcon>
-									<Text>{item.label}</Text>
-								</Item>
-							{/each}
-						</SelectionGroup>
-						<Separator />
-						<Item tag="a" href="/THEMING.md" style="color: inherit;">
-							<Text>Learn about theming</Text>
-						</Item>
-						<Item
-							tag="a"
-							href="https://github.com/hperrin/svelte-material-ui/tree/master/packages/site/src/theme"
-							target="_blank"
-							rel="noreferrer noorigin"
-							style="color: inherit;"
-						>
-							<Text>See the theme source</Text>
-						</Item>
-					</List>
-				</Menu>
-			</div>
-		</Section>
-	</Row>
-</TopAppBar> -->
-
 <TopAppBar />
+<div class="toolbar" />
 <AppContent>
-	<main class="demo-main-content" bind:this={mainContent}>
+	<main bind:this={mainContent}>
 		<slot />
 	</main>
 </AppContent>
@@ -233,5 +148,13 @@
 		* > :global(.hide-initial-small) {
 			display: none;
 		}
+	}
+
+	:global(.app-content) {
+		margin-top: 48px;
+	}
+
+	.toolbar {
+		height: 64px;
 	}
 </style>
