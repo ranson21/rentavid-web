@@ -11,7 +11,7 @@
 		"smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark",
 		"site-light": "sass --no-source-map -I src/theme -I node_modules -I ../smui-theme/node_modules -I ../../node_modules src/site.scss static/site.css",
 		"site-dark": "sass --no-source-map -I src/theme/dark -I node_modules -I ../smui-theme/node_modules -I ../../node_modules src/site.scss static/site-dark.css",
-		"preview": "vite preview",
+		"preview": "vite preview --port 3000",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"test": "npm run test:integration && npm run test:unit",
@@ -20,7 +20,7 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"docker:build": "docker build -t rentavid-web .",
-		"docker:run": "docker run -p 8080:8080 -e API_HOST=localhost -e API_PORT=8000 --rm --name rv-web rentavid-web"
+		"docker:run": "docker run -p 3000:3000 --rm --name rv-web rentavid-web"
 	},
 	"devDependencies": {
 		"@mdi/js": "^7.4.47",

@@ -43,5 +43,5 @@ COPY --from=builder /staging/package.json /staging/package-lock.json /app/
 COPY --from=builder /staging/node_modules /app/node_modules
 COPY --from=builder /staging/build /app/build
 
-EXPOSE 4173
-CMD ["npm", "run", "preview", "--", "--host"]
+EXPOSE 3000
+CMD ["node", "/app/build/index.js"]
