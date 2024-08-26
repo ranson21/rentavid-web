@@ -6,6 +6,11 @@
 		"dev": "vite dev",
 		"clean": "rm -rf .svelte-kit build",
 		"build": "vite build",
+		"prepare": "npm run smui-theme-light && npm run smui-theme-dark && npm run site-light && npm run site-dark",
+		"smui-theme-light": "smui-theme compile static/smui.css -i src/theme",
+		"smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark",
+		"site-light": "sass --no-source-map -I src/theme -I node_modules -I ../smui-theme/node_modules -I ../../node_modules src/site.scss static/site.css",
+		"site-dark": "sass --no-source-map -I src/theme/dark -I node_modules -I ../smui-theme/node_modules -I ../../node_modules src/site.scss static/site-dark.css",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
@@ -18,6 +23,7 @@
 		"docker:run": "docker run -p 3000:3000 --rm --name rentavid-web rentavid-web"
 	},
 	"devDependencies": {
+		"@mdi/js": "^7.4.47",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^5.2.2",
@@ -30,11 +36,20 @@
 		"globals": "^15.0.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
+		"smui-theme": "^7.0.0",
 		"svelte": "^4.2.7",
 		"svelte-check": "^3.6.0",
 		"typescript": "^5.0.0",
 		"vite": "^5.0.3",
 		"vitest": "^2.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@smui/button": "^7.0.0",
+		"@smui/textfield": "^7.0.0",
+		"@smui/top-app-bar": "^7.0.0",
+		"normalize.css": "^8.0.1",
+		"svelte-material-ui": "^7.0.0",
+		"tinygesture": "^3.0.0"
+	}
 }

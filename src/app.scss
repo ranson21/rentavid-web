@@ -1,0 +1,218 @@
+// Elevation mixins.
+@use '@material/elevation/mixins' as elevation;
+
+// Paper mixins.
+@use '@smui/paper/mixins' as paper;
+@use '@material/theme/mixins' as theme;
+
+// Typography mixins.
+@use '@material/typography/mixins' as typography;
+
+// Main Top App Bar styling.
+@use '@material/top-app-bar/mixins' as top-app-bar-mixins;
+@use '@material/top-app-bar/variables' as top-app-bar-variables;
+// Import all the styles for the classes.
+@use '@material/typography/mdc-typography';
+// The following classes become available:
+//   mdc-typography--headline1
+//   mdc-typography--headline2
+//   mdc-typography--headline3
+//   mdc-typography--headline4
+//   mdc-typography--headline5
+//   mdc-typography--headline6
+//   mdc-typography--subtitle1
+//   mdc-typography--subtitle2
+//   mdc-typography--body1
+//   mdc-typography--body2
+//   mdc-typography--caption
+//   mdc-typography--button
+//   mdc-typography--overline
+//   mdc-typography--body1
+
+.mdc-top-app-bar.demo-top-app-bar {
+  // Color the top bar with "surface" colors.
+  @include top-app-bar-mixins.fill-color(surface);
+  @include top-app-bar-mixins.ink-color(on-surface);
+  @include top-app-bar-mixins.icon-ink-color(on-surface);
+  // Give it a shadow.
+  @include elevation.elevation(4);
+  // Position it above the drawer.
+  z-index: 7;
+}
+
+//
+// Some defaults that may be helpful to you.
+// If you just want to use these, and not the classes, you can instead just
+// @use '@material/typography/mixins' as typography, and your CSS file will be
+// smaller.
+//
+html {
+  @include typography.typography('body1');
+}
+
+h1 {
+  @include typography.typography('headline1');
+}
+
+h2 {
+  @include typography.typography('headline2');
+}
+
+h3 {
+  @include typography.typography('headline3');
+}
+
+h4 {
+  @include typography.typography('headline4');
+}
+
+h5 {
+  @include typography.typography('headline5');
+}
+
+h6 {
+  @include typography.typography('headline6');
+}
+
+caption {
+  @include typography.typography('caption');
+}
+
+code,
+pre {
+  font-family: 'Roboto Mono', monospace;
+}
+
+small {
+  font-size: 0.9em;
+}
+
+big {
+  font-size: 1.1em;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
+
+// Now on to the regular app styling stuff.
+
+html {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+}
+
+body,
+#smui-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.drawer-container {
+  flex-grow: 1;
+  height: 0;
+  display: flex;
+}
+
+.demo-drawer,
+.demo-main-content {
+  overflow: auto;
+  height: 100%;
+  border-radius: 0;
+}
+
+.demo-drawer.demo-drawer-adjust {
+  padding-bottom: top-app-bar-variables.$row-height;
+}
+
+.demo-app-content {
+  flex: auto;
+  position: relative;
+  width: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-main-content {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.demo-main-content > section {
+  padding: 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.demo-main-content > section:after {
+  height: 32px;
+  display: block;
+  content: ' ';
+}
+
+.demo-spaced {
+  margin-bottom: 2.5em;
+}
+
+.highlight {
+  background-color: #282b2e;
+  color: #e0e2e4;
+  padding: 1em !important;
+  border-radius: 5px;
+}
+
+.status {
+  max-width: 100%;
+  font-size: 0.9em;
+  word-break: break-word;
+  white-space: normal;
+  margin-bottom: 0;
+}
+
+@include paper.paper-color(svelte-blue, #40b3ff, #fff);
+
+@media (max-width: 460px) {
+  .demo-main-content > section {
+    padding: 16px;
+  }
+}
+
+code:not([class]) {
+  background-color: #282b2e;
+  color: #e0e2e4;
+  border-radius: 4px;
+  padding: 0 3px;
+}
+
+section.markdown {
+  h1 {
+    @include typography.typography('headline2');
+  }
+
+  h2 {
+    @include typography.typography('headline3');
+  }
+
+  h3 {
+    @include typography.typography('headline4');
+  }
+
+  h4 {
+    @include typography.typography('headline5');
+  }
+
+  h5 {
+    @include typography.typography('headline6');
+  }
+
+  pre {
+    padding-left: 2em;
+  }
+}
