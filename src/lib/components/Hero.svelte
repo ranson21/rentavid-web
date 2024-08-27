@@ -46,23 +46,24 @@
 <div class="home-hero">
 	<Paper class="hero" elevation={4}>
 		{#each carouselItems as item, index (item.film_id)}
-			<div
-				class="carousel-item"
-				style="background-image: url({item.backdrop_path}); opacity: {index === currentIndex
-					? 1
-					: 0};"
-			>
-				<div class="content">
-					<DVDDetails
-						{item}
-						dvdId={item.film_id}
-						title={item.title}
-						description={item.description}
-						imageUrl={item.poster_path}
-						releaseYear={item.release_year}
-					/>
+			{#if index === currentIndex}
+				<div
+					class="carousel-item"
+					style="background-image: url({item.backdrop_path}); opacity: {index === currentIndex
+						? 1
+						: 0};"
+				>
+					<div class="content">
+						<DVDDetails
+							dvdId={item.film_id}
+							title={item.title}
+							description={item.description}
+							imageUrl={item.poster_path}
+							releaseYear={item.release_year}
+						/>
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/each}
 
 		<div class="carousel-controls">

@@ -1,4 +1,6 @@
 <script>
+	import { onMount } from 'svelte';
+
 	import Button, { Label } from '@smui/button';
 	import { liveQuery } from 'dexie';
 
@@ -8,11 +10,10 @@
 	import { routeToPage } from '$lib/utils/common';
 	import { snackbarStore } from '$lib/utils/snackbarStore';
 
-	function showSuccessMessage(title) {
-		snackbarStore.show(`Added ${title} to cart`, 'success', 3000);
+	function showSuccessMessage() {
+		snackbarStore.show(`Added ${capitalize(title)} to cart`, 'success', 3000);
 	}
 
-	export let item;
 	export let dvdId = 0;
 	export let title = 'Movie Title';
 	export let description = 'Movie description goes here.';
@@ -21,28 +22,29 @@
 	export let rentalRate = '3.99';
 	export let rentalDuration = '48 hours';
 
-	let rented = {};
+	let rented = false;
+
 	let items = liveQuery(() => db.cart.toArray());
 	$: items.subscribe((item) => {
 		if (item.find((dvd) => dvd.dvdId === dvdId)) {
-			console.log('item', item);
-			rented[dvdId] = true;
+			rented = true;
 		}
 	});
 
-	// console.log('rented', rented);
-
-	async function rentNow(dvdId, title) {
+	async function rentNow() {
 		// Implement rent functionality
-		// Add the new friend!
-		const id = await db.cart.add({
+		await db.cart.add({
 			dvdId,
 			title
 		});
-		rented[dvdId] = true;
+		rented = true;
 
-		showSuccessMessage(capitalize(title));
+		showSuccessMessage();
 	}
+
+	onMount(() => {
+		console.log(`Component mounted for DVD ID: ${dvdId}, Title: ${title}`);
+	});
 </script>
 
 <div class="dvd-details">
@@ -65,9 +67,9 @@
 					<i class="material-icons">info</i>
 				</Button>
 
-				<Button on:click={() => rentNow(dvdId, title)} variant="raised" color="secondary">
-					<Label style="margin-right:10px">{rented[dvdId] ? 'In Cart' : 'Rent Now'}</Label>
-					<i class="material-icons" class:is-disabled={rented[dvdId]}>add_shopping_cart</i>
+				<Button on:click={() => rentNow()} variant="raised" color="secondary" disabled={rented}>
+					<Label style="margin-right:10px">{rented ? 'In Cart' : 'Rent Now'}</Label>
+					<i class="material-icons" class:is-disabled={rented}>add_shopping_cart</i>
 				</Button>
 			</div>
 		</div>
