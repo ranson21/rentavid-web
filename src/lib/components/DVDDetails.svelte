@@ -41,10 +41,6 @@
 
 		showSuccessMessage();
 	}
-
-	onMount(() => {
-		console.log(`Component mounted for DVD ID: ${dvdId}, Title: ${title}`);
-	});
 </script>
 
 <div class="dvd-details">
