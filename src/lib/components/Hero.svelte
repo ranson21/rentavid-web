@@ -45,7 +45,7 @@
 
 <div class="home-hero">
 	<Paper class="hero" elevation={4}>
-		{#each carouselItems as item, index}
+		{#each carouselItems as item, index (item.film_id)}
 			<div
 				class="carousel-item"
 				style="background-image: url({item.backdrop_path}); opacity: {index === currentIndex
@@ -54,6 +54,7 @@
 			>
 				<div class="content">
 					<DVDDetails
+						{item}
 						dvdId={item.film_id}
 						title={item.title}
 						description={item.description}

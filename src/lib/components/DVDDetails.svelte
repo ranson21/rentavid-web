@@ -1,10 +1,18 @@
 <script>
 	import Button, { Label } from '@smui/button';
+	import { liveQuery } from 'dexie';
 
+	import { db } from '$lib/utils/db';
 	import { capitalize } from '$lib/utils/format';
 	import DVDTitle from '$lib/components/DVDTitle.svelte';
 	import { routeToPage } from '$lib/utils/common';
+	import { snackbarStore } from '$lib/utils/snackbarStore';
 
+	function showSuccessMessage(title) {
+		snackbarStore.show(`Added ${title} to cart`, 'success', 3000);
+	}
+
+	export let item;
 	export let dvdId = 0;
 	export let title = 'Movie Title';
 	export let description = 'Movie description goes here.';
@@ -13,9 +21,27 @@
 	export let rentalRate = '3.99';
 	export let rentalDuration = '48 hours';
 
-	function rentNow() {
+	let rented = {};
+	let items = liveQuery(() => db.cart.toArray());
+	$: items.subscribe((item) => {
+		if (item.find((dvd) => dvd.dvdId === dvdId)) {
+			console.log('item', item);
+			rented[dvdId] = true;
+		}
+	});
+
+	// console.log('rented', rented);
+
+	async function rentNow(dvdId, title) {
 		// Implement rent functionality
-		console.log(`Renting ${title}`);
+		// Add the new friend!
+		const id = await db.cart.add({
+			dvdId,
+			title
+		});
+		rented[dvdId] = true;
+
+		showSuccessMessage(capitalize(title));
 	}
 </script>
 
@@ -39,9 +65,9 @@
 					<i class="material-icons">info</i>
 				</Button>
 
-				<Button on:click={rentNow} variant="raised" color="secondary">
-					<Label style="margin-right:10px">Rent Now</Label>
-					<i class="material-icons">add_shopping_cart</i>
+				<Button on:click={() => rentNow(dvdId, title)} variant="raised" color="secondary">
+					<Label style="margin-right:10px">{rented[dvdId] ? 'In Cart' : 'Rent Now'}</Label>
+					<i class="material-icons" class:is-disabled={rented[dvdId]}>add_shopping_cart</i>
 				</Button>
 			</div>
 		</div>
@@ -49,6 +75,10 @@
 </div>
 
 <style>
+	.is-disabled {
+		display: none;
+	}
+
 	.dvd-details {
 		padding: 20px;
 		border-radius: 8px;

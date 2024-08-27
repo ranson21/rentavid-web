@@ -46,9 +46,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@smui-extra/badge": "^7.0.0",
 		"@smui/button": "^7.0.0",
 		"@smui/textfield": "^7.0.0",
 		"@smui/top-app-bar": "^7.0.0",
+		"dexie": "^4.0.8",
 		"express": "^4.19.2",
 		"express-http-proxy": "^2.1.1",
 		"http-proxy-middleware": "^3.0.0",

@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import 'normalize.css';
 
+	import Snackbar from '$lib/components/Snackbar.svelte';
 	import TopAppBar from '$lib/components/TopAppBar.svelte';
 
 	let mainContent;
@@ -62,6 +63,7 @@
 
 <TopAppBar />
 <div class="toolbar" />
+<Snackbar />
 <main bind:this={mainContent}>
 	<slot />
 </main>

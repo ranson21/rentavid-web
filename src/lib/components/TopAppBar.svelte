@@ -7,7 +7,10 @@
 	import Logo from './Logo.svelte'; // Assume we have a Logo component
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
+	import { liveQuery } from 'dexie';
+	import Badge from '@smui-extra/badge';
 
+	import { db } from '$lib/utils/db';
 	import { routeToPage } from '$lib/utils/common';
 
 	let searchQuery = '';
@@ -31,6 +34,13 @@
 		updateRoute('');
 		routeToPage('cart');
 	}
+
+	$: cartItemsCount = 0;
+
+	let items = liveQuery(() => db.cart.toArray());
+	$: items.subscribe((item) => {
+		cartItemsCount = item.length;
+	});
 </script>
 
 <TopAppBar variant="fixed">
@@ -61,9 +71,14 @@
 				{/each}
 			</div>
 			<div class="separator"></div>
-			<IconButton class="material-icons shopping-cart-button" on:click={() => navToCart()}
-				>shopping_cart</IconButton
-			>
+			<div class="cart-button-container">
+				<IconButton class="material-icons shopping-cart-button" on:click={() => navToCart()}
+					>shopping_cart</IconButton
+				>
+				{#if cartItemsCount > 0}
+					<Badge class="cart-badge">{cartItemsCount}</Badge>
+				{/if}
+			</div>
 			<Button variant="raised" color="secondary">Login</Button>
 		</Section>
 	</Row>
@@ -91,6 +106,32 @@
 
 	:global(.mdc-floating-label--float-above) {
 		color: white !important;
+	}
+
+	.cart-button-container {
+		position: relative;
+		display: inline-block;
+		margin-right: 16px;
+	}
+	:global(.smui-badge.smui-badge--align-top-end) {
+		transform-origin: center;
+		transform: translateX(50%) translateY(-20%) !important;
+	}
+
+	:global(.cart-badge) {
+		position: absolute;
+		top: 0;
+		left: -8px;
+		background-color: #ff4081 !important;
+		color: white;
+		border-radius: 50%;
+		padding: 0;
+		font-size: 12px;
+		min-width: 25px;
+		height: 18px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.separator {
