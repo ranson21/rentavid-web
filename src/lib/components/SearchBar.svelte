@@ -113,7 +113,7 @@
 									class="poster"
 								/>
 							</Graphic>
-							<Text>{capitalize(result.title)}</Text>
+							<Text>{capitalize(result.title)} ({result.release_year})</Text>
 						</Item>
 					{/each}
 				</List>

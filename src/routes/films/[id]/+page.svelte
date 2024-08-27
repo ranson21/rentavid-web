@@ -26,7 +26,7 @@
 		<img src={data.film.poster_path} alt={data.film.title} class="dvd-cover" />
 	</div>
 	<div class="middle">
-		<h3>{capitalize(data.film.title)}</h3>
+		<h3>{capitalize(data.film.title)} ({data.film.release_year})</h3>
 		<span class="hr" />
 		<p>{data.film.description}</p>
 		<p><b>Rental Rate:</b> ${data.film.rental_rate}</p>

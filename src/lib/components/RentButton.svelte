@@ -5,6 +5,9 @@
 	import { db } from '$lib/utils/db';
 	import { capitalize } from '$lib/utils/format';
 	import { snackbarStore } from '$lib/utils/snackbarStore';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	function showSuccessMessage() {
 		snackbarStore.show(`Added ${capitalize(title)} to cart`, 'success', 3000);
@@ -29,6 +32,7 @@
 			title
 		});
 		rented = true;
+		dispatch('rent', { film_id: dvdId });
 
 		showSuccessMessage();
 	}
