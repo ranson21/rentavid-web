@@ -12,6 +12,7 @@
 
 	import { db } from '$lib/utils/db';
 	import { routeToPage } from '$lib/utils/common';
+	import SearchBar from './SearchBar.svelte';
 
 	let searchQuery = '';
 
@@ -50,9 +51,7 @@
 		</Section>
 
 		<Section class="search-bar-container">
-			<Textfield class="search-bar" variant="outlined" label="Search..." bind:value={searchQuery}>
-				<Icon class="material-icons" slot="leadingIcon">search</Icon>
-			</Textfield>
+			<SearchBar />
 		</Section>
 
 		<Section align="end">

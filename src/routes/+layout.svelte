@@ -6,6 +6,7 @@
 
 	import Snackbar from '$lib/components/Snackbar.svelte';
 	import TopAppBar from '$lib/components/TopAppBar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 
 	let mainContent;
 	let miniWindow = false;
@@ -59,6 +60,16 @@
 
 	<!-- It Matters -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/itmatters@2.0.1/index.css" />
+	<style>
+		body {
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+		}
+		main {
+			flex: 1 0 auto;
+		}
+	</style>
 </svelte:head>
 
 <TopAppBar />
@@ -67,6 +78,7 @@
 <main bind:this={mainContent}>
 	<slot />
 </main>
+<Footer />
 
 <style>
 	@media (max-width: 720px) {

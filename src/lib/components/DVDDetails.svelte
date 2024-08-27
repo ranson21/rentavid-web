@@ -9,6 +9,7 @@
 	import DVDTitle from '$lib/components/DVDTitle.svelte';
 	import { routeToPage } from '$lib/utils/common';
 	import { snackbarStore } from '$lib/utils/snackbarStore';
+	import RentButton from '$lib/components/RentButton.svelte';
 
 	function showSuccessMessage() {
 		snackbarStore.show(`Added ${capitalize(title)} to cart`, 'success', 3000);
@@ -63,20 +64,13 @@
 					<i class="material-icons">info</i>
 				</Button>
 
-				<Button on:click={() => rentNow()} variant="raised" color="secondary" disabled={rented}>
-					<Label style="margin-right:10px">{rented ? 'In Cart' : 'Rent Now'}</Label>
-					<i class="material-icons" class:is-disabled={rented}>add_shopping_cart</i>
-				</Button>
+				<RentButton {dvdId} {title} />
 			</div>
 		</div>
 	</div>
 </div>
 
 <style>
-	.is-disabled {
-		display: none;
-	}
-
 	.dvd-details {
 		padding: 20px;
 		border-radius: 8px;
