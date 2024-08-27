@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import Paper from '@smui/paper';
 	import Button from '@smui/button';
-	import DvdTitle from './DVDTitle.svelte';
+	import DVDDetails from '$lib/components/DVDDetails.svelte';
 
 	export let carouselItems = [
 		{
@@ -53,8 +53,7 @@
 					: 0};"
 			>
 				<div class="content">
-					<DvdTitle
-						hideTitle
+					<DVDDetails
 						dvdId={item.film_id}
 						title={item.title}
 						description={item.description}
@@ -87,7 +86,7 @@
 	.home-hero {
 		position: relative;
 		overflow: hidden;
-		height: 300px;
+		height: 400px;
 	}
 
 	.hero {
