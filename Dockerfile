@@ -38,10 +38,12 @@ COPY . ./
 RUN corepack enable && npm install && npm run build
 
 FROM node:20-alpine
+ENV API_URL=http://localhost:8000
 WORKDIR /app
 COPY --from=builder /staging/package.json /staging/package-lock.json /app/
 COPY --from=builder /staging/node_modules /app/node_modules
 COPY --from=builder /staging/build /app/build
+COPY --from=builder /staging/server.js /app/server.js
 
 EXPOSE 3000
-CMD ["node", "/app/build/index.js"]
+CMD ["node", "/app/server.js"]

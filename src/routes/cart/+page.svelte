@@ -1,11 +1,14 @@
 <script>
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+
 	import { db } from '$lib/utils/db';
 	import IconButton from '@smui/icon-button';
 	import Button, { Label } from '@smui/button';
 	import RentButton from '$lib/components/RentButton.svelte';
 
 	let updateTrigger = 0;
+	let isLoading = true;
 
 	let suggestedFilms = [];
 	let total = 0;
@@ -18,8 +21,10 @@
 	let cartItems = [];
 
 	async function fetchFilmDetails(id) {
+		if (!browser) return null;
+
 		try {
-			const response = await fetch(`api/v1/films/${id}`);
+			const response = await fetch(`/api/v1/films/${id}`);
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 			return await response.json();
 		} catch (e) {
@@ -30,6 +35,8 @@
 
 	async function loadCartItems() {
 		try {
+			if (!browser) return;
+
 			updateTrigger += 1;
 
 			const items = await db.cart.toArray();
@@ -75,7 +82,8 @@
 	async function loadSuggestedFilms() {
 		try {
 			const firstItemId = cartItems.length ? cartItems[0].dvdId : 1;
-			const response = await fetch(`api/v1/films/${firstItemId}/related`);
+			const apiUrl = `/api/v1/films/${firstItemId}/related`;
+			const response = await fetch(apiUrl);
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 			suggestedFilms = await response.json();
 		} catch (e) {
@@ -96,10 +104,11 @@
 
 	onMount(() => {
 		loadCartItems().then(() => loadSuggestedFilms());
+		isLoading = false;
 	});
 
 	$: {
-		if (cartItems) {
+		if (browser && cartItems.length) {
 			loadSuggestedFilms();
 		}
 	}

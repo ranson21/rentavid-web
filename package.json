@@ -20,7 +20,7 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"docker:build": "docker build -t rentavid-web .",
-		"docker:run": "docker run -p 3000:3000 --rm --name rv-web rentavid-web"
+		"docker:run": "docker run -p 3000:3000 --network host -e API_URL=http://localhost:8000 --rm --name rv-web rentavid-web"
 	},
 	"devDependencies": {
 		"@mdi/js": "^7.4.47",
