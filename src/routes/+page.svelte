@@ -3,9 +3,9 @@
 	export let data;
 
 	import { page } from '$app/stores';
-	import DvdContainer from '$lib/DVDContainer.svelte';
+	import DvdContainer from '$lib/components/DVDContainer.svelte';
 
-	import Hero from '$lib/Hero.svelte';
+	import Hero from '$lib/components/Hero.svelte';
 </script>
 
 <Hero carouselItems={$page.data.featuredFilms} />
@@ -13,13 +13,15 @@
 {#each $page.data.categories as category}
 	<div class="mdc-typography--headline5" style="margin-left: 10px">{category.name}</div>
 	<span class="hr" />
-	{#await data.films[category.category_id]}
-		<DvdContainer />
-	{:then dvds}
-		<DvdContainer {dvds} />
-	{:catch error}
-		<p>error loading films: {error.message}</p>
-	{/await}
+	<div class="dvd-wrapper">
+		{#await data.films[category.category_id]}
+			<DvdContainer />
+		{:then dvds}
+			<DvdContainer {dvds} />
+		{:catch error}
+			<p>error loading films: {error.message}</p>
+		{/await}
+	</div>
 {/each}
 
 <style>
@@ -30,5 +32,9 @@
 		margin-right: 10px;
 		display: block;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+	}
+
+	.dvd-wrapper {
+		margin-left: 10px;
 	}
 </style>

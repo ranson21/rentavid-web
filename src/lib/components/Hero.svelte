@@ -54,6 +54,8 @@
 			>
 				<div class="content">
 					<DvdTitle
+						hideTitle
+						dvdId={item.film_id}
 						title={item.title}
 						description={item.description}
 						imageUrl={item.poster_path}

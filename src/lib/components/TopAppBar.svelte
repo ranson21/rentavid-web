@@ -6,11 +6,14 @@
 	import Icon from '@smui/textfield/icon';
 	import Logo from './Logo.svelte'; // Assume we have a Logo component
 	import { writable } from 'svelte/store';
+	import { page } from '$app/stores';
+
+	import { routeToPage } from '$lib/utils/common';
 
 	let searchQuery = '';
 
 	// Create a store for the current route
-	const currentRoute = writable('/');
+	const currentRoute = writable($page.route.id);
 
 	// Function to update the current route
 	function updateRoute(path) {
@@ -20,9 +23,14 @@
 	// Array of navigation items
 	const navItems = [
 		{ path: '/', label: 'Home' },
-		{ path: '/browse', label: 'Browse' },
-		{ path: '/stores', label: 'Stores' }
+		{ path: 'browse', label: 'Browse' },
+		{ path: 'stores', label: 'Stores' }
 	];
+
+	function navToCart() {
+		updateRoute('');
+		routeToPage('cart');
+	}
 </script>
 
 <TopAppBar variant="fixed">
@@ -43,8 +51,9 @@
 					<div class="mdc-typography--button">
 						<a
 							href={item.path}
-							class:active={$currentRoute === item.path}
-							on:click|preventDefault={() => updateRoute(item.path)}
+							class:active={$currentRoute?.replaceAll('/', '') === item.path ||
+								($currentRoute === '/' && item.path === '/')}
+							on:click={() => updateRoute(item.path)}
 						>
 							{item.label}
 						</a>
@@ -52,7 +61,9 @@
 				{/each}
 			</div>
 			<div class="separator"></div>
-			<IconButton class="material-icons shopping-cart-button">shopping_cart</IconButton>
+			<IconButton class="material-icons shopping-cart-button" on:click={() => navToCart()}
+				>shopping_cart</IconButton
+			>
 			<Button variant="raised" color="secondary">Login</Button>
 		</Section>
 	</Row>
@@ -74,8 +85,12 @@
 	}
 
 	:global(.mdc-text-field--focused) {
-		border: 0.25px solid white;
+		border: none;
 		border-radius: 5px;
+	}
+
+	:global(.mdc-floating-label--float-above) {
+		color: white !important;
 	}
 
 	.separator {

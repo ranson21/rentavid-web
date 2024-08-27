@@ -1,37 +1,33 @@
 <script>
 	import { onMount } from 'svelte';
 	import IconButton from '@smui/icon-button';
-	import DVDTitle from './DVDTitle.svelte';
+
+	import DVDTitle from '$lib/components/DVDTitle.svelte';
 
 	export let dvds = [
 		{
 			title: 'Inception',
 			description: 'A thief enters dreams to steal secrets.',
-			poster_path: 'https://via.placeholder.com/300x200?text=Inception',
 			releaseYear: '2010'
 		},
 		{
 			title: 'The Matrix',
 			description: 'A computer programmer discovers a shocking truth.',
-			poster_path: 'https://via.placeholder.com/300x200?text=The+Matrix',
 			releaseYear: '1999'
 		},
 		{
 			title: 'Interstellar',
 			description: 'Explorers travel through a wormhole in space.',
-			poster_path: 'https://via.placeholder.com/300x200?text=Interstellar',
 			releaseYear: '2014'
 		},
 		{
 			title: 'Pulp Fiction',
 			description: 'The lives of various characters intertwine.',
-			poster_path: 'https://via.placeholder.com/300x200?text=Pulp+Fiction',
 			releaseYear: '1994'
 		},
 		{
 			title: 'The Shawshank Redemption',
 			description: 'Two imprisoned men bond over several years.',
-			poster_path: 'https://via.placeholder.com/300x200?text=Shawshank',
 			releaseYear: '1994'
 		}
 		// Add more DVD objects as needed
@@ -76,7 +72,13 @@
 	$: canScrollRight = scrollAmount < maxScroll;
 </script>
 
-<div class="dvd-container" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+<div
+	class="dvd-container"
+	on:mouseenter={handleMouseEnter}
+	on:mouseleave={handleMouseLeave}
+	role="button"
+	tabindex="0"
+>
 	<div class="scroll-button-container left" class:active={canScrollLeft}>
 		<IconButton on:click={scrollLeft} disabled={!canScrollLeft} class="scroll-button">
 			<i class="material-icons">chevron_left</i>
@@ -96,6 +98,7 @@
 			{#each dvds as film}
 				<div class="dvd-item">
 					<DVDTitle
+						dvdId={film.film_id}
 						title={film.title}
 						description={film.description}
 						imageUrl={film.poster_path}
@@ -157,29 +160,6 @@
 		z-index: 1000;
 		right: 0;
 		background: linear-gradient(270deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
-	}
-
-	.scroll-button {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		z-index: 1;
-		background-color: rgba(255, 255, 255, 0.8);
-		border-radius: 50%;
-		opacity: 0;
-		transition: opacity 0.3s ease;
-	}
-
-	.dvd-container:hover .scroll-button {
-		opacity: 1;
-	}
-
-	.scroll-button.left {
-		left: 10px;
-	}
-
-	.scroll-button.right {
-		right: 10px;
 	}
 
 	/* Hide scrollbar for Chrome, Safari and Opera */
