@@ -59,7 +59,7 @@
 	<div class="related-list">
 		{#each $page.data.related as related}
 			<div class="dvd-item">
-				<DvdTitle dvdId={related.dvdId} imageUrl={related.poster_path} title={related.title} />
+				<DvdTitle dvdId={related.film_id} imageUrl={related.poster_path} title={related.title} />
 			</div>
 		{/each}
 	</div>
