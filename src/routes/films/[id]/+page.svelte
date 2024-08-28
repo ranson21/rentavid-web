@@ -1,7 +1,8 @@
 <script>
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import List, { Item, Graphic } from '@smui/list';
+	import { goto } from '$app/navigation';
 
 	import { capitalize } from '$lib/utils/format';
 	import DvdTitle from '$lib/components/DVDTitle.svelte';
@@ -13,25 +14,35 @@
 		return unsubscribe;
 	});
 
+	afterUpdate(() => {
+		invalidate((url) => url.pathname.startsWith('/films/'));
+	});
+
 	// Dummy data - replace with actual data fetching logic
 	export let data;
+
+	$: currentFilm = data.film;
+
+	function handleRelatedDvdClick(filmId) {
+		goto(`/films/${filmId}`, { replaceState: true });
+	}
 </script>
 
 <div
 	class="backdrop"
-	style="background-image: url({data.film.backdrop_path}); height: 400px;"
+	style="background-image: url({currentFilm.backdrop_path}); height: 400px;"
 ></div>
 <div class="content">
 	<div class="left">
-		<img src={data.film.poster_path} alt={data.film.title} class="dvd-cover" />
+		<img src={currentFilm.poster_path} alt={currentFilm.title} class="dvd-cover" />
 	</div>
 	<div class="middle">
-		<h3>{capitalize(data.film.title)} ({data.film.release_year})</h3>
+		<h3>{capitalize(currentFilm.title)} ({currentFilm.release_year})</h3>
 		<span class="hr" />
-		<p>{data.film.description}</p>
-		<p><b>Rental Rate:</b> ${data.film.rental_rate}</p>
-		<p><b>Rental Duration:</b> {data.film.rental_duration} days</p>
-		<RentButton dvdId={data.film.film_id} title={data.film.title} />
+		<p>{currentFilm.description}</p>
+		<p><b>Rental Rate:</b> ${currentFilm.rental_rate}</p>
+		<p><b>Rental Duration:</b> {currentFilm.rental_duration} days</p>
+		<RentButton dvdId={currentFilm.film_id} title={currentFilm.title} />
 	</div>
 	<div class="right">
 		<h3>Cast</h3>
@@ -58,7 +69,7 @@
 	<span class="hr" style="margin-bottom: 16px;" />
 	<div class="related-list">
 		{#each $page.data.related as related}
-			<div class="dvd-item">
+			<div class="dvd-item" on:click={() => handleRelatedDvdClick(related.film_id)}>
 				<DvdTitle dvdId={related.film_id} imageUrl={related.poster_path} title={related.title} />
 			</div>
 		{/each}

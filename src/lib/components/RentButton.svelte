@@ -1,6 +1,7 @@
 <script>
 	import Button, { Label } from '@smui/button';
 	import { liveQuery } from 'dexie';
+	import { onMount, afterUpdate } from 'svelte';
 
 	import { db } from '$lib/utils/db';
 	import { capitalize } from '$lib/utils/format';
@@ -17,13 +18,24 @@
 	export let title = 'Movie Title';
 
 	let rented = false;
+	let items;
 
-	let items = liveQuery(() => db.cart.toArray());
-	$: items.subscribe((item) => {
-		if (item.find((dvd) => dvd.dvdId === dvdId)) {
-			rented = true;
-		}
+	onMount(() => {
+		items = liveQuery(() => db.cart.toArray());
+		updateRentedStatus();
 	});
+
+	afterUpdate(() => {
+		updateRentedStatus();
+	});
+
+	function updateRentedStatus() {
+		if (items) {
+			items.subscribe((cartItems) => {
+				rented = cartItems.some((dvd) => dvd.dvdId === dvdId);
+			});
+		}
+	}
 
 	async function rentNow() {
 		// Implement rent functionality
