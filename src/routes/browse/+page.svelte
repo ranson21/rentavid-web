@@ -27,96 +27,133 @@
 		{ value: 'title_asc', label: 'Title (A-Z)' }
 	];
 
+	// Pagination variables
+	let currentPage = 1;
+	let itemsPerPage = 25;
+	let totalItems = 0;
+	let totalPages = 0;
+
 	onMount(async () => {
 		// Fetch languages from API
 		const res = await fetch('/api/v1/languages');
 		languages = (await res.json()).map((l) => l.name);
-		console.log('languages', languages);
+
 		// Fetch DVDs from API (replace with your API logic)
 		await fetchDvds();
 	});
 
 	async function fetchDvds() {
-		// Replace with your API call to fetch DVDs based on filters and sort order
+		// Replace with your API call to fetch DVDs based on filters, sort order, and pagination
 		// Example:
 		const res = await fetch(
-			`/api/v1/films?releaseYear=${releaseYear}&languages=${selectedLanguages}&rentalRate=${rentalRate}&rating=${selectedRating}&sort=${sortBy}`
+			`/api/v1/films?releaseYear=${releaseYear}${selectedLanguages.length ? '&languages=' + selectedLanguages.join(',') : ''}&rentalRate=${rentalRate}${selectedRating.length ? '&rating=' + selectedRating.join(',') : ''}&sort=${sortBy}&page=${currentPage}&limit=${itemsPerPage}`
 		);
-		dvds = await res.json();
+		const data = await res.json();
+		console.log('data', data);
+		dvds = data.films;
+		totalItems = data.pagination.total_items;
+		totalPages = Math.ceil(totalItems / itemsPerPage);
 	}
 
+	// Reactive declarations to trigger fetchDvds
+	$: sortByTrigger = sortBy;
+	$: releaseYearTrigger = releaseYear;
+	$: selectedLanguagesTrigger = selectedLanguages;
+	$: rentalRateTrigger = rentalRate;
+	$: selectedRatingTrigger = selectedRating;
+	$: currentPageTrigger = currentPage;
+
+	// Single reactive statement to call fetchDvds when any input changes
 	$: {
+		sortByTrigger;
+		releaseYearTrigger;
+		selectedLanguagesTrigger;
+		rentalRateTrigger;
+		selectedRatingTrigger;
+		currentPageTrigger;
 		fetchDvds();
 	}
 
 	let isFilterOpen = true;
 	let isSortOpen = false;
+
+	function goToPage(page) {
+		if (page >= 1 && page <= totalPages) {
+			currentPage = page;
+		}
+	}
 </script>
 
 <div class="container">
 	<h4>Browse DVDs</h4>
 	<div class="filter-panel">
-		<Accordion class="filter-panel-content">
-			<Panel bind:open={isSortOpen}>
-				<Header
-					>Sorting <IconButton slot="icon" toggle pressed={isSortOpen}>
-						<Icon class="material-icons" on>expand_less</Icon>
-						<Icon class="material-icons">chevron_right</Icon>
-					</IconButton></Header
-				>
-				<Content>
-					<Select bind:value={sortBy} label="Sort By">
-						{#each sortOptions as option}
-							<Option value={option.value}>{option.label}</Option>
-						{/each}
-					</Select>
-				</Content>
-			</Panel>
-		</Accordion>
-		<Accordion>
-			<Panel bind:open={isFilterOpen}>
-				<Header
-					>Filters <IconButton slot="icon" toggle pressed={isFilterOpen}>
-						<Icon class="material-icons" on>expand_less</Icon>
-						<Icon class="material-icons">chevron_right</Icon>
-					</IconButton></Header
-				>
-				<Content>
-					<div class="filter-item">
-						<h6>Release Year: {releaseYear}</h6>
-						<div class="slider-labels">
-							<span>{1900}</span>
-							<span>{2023}</span>
+		<div style="position: relative; z-index: 1000;">
+			<Accordion class="filter-panel-content">
+				<Panel bind:open={isSortOpen}>
+					<Header
+						>Sorting <IconButton slot="icon" toggle pressed={isSortOpen}>
+							<Icon class="material-icons" on>expand_less</Icon>
+							<Icon class="material-icons">chevron_right</Icon>
+						</IconButton></Header
+					>
+					<Content>
+						<div class="sort-select-wrapper">
+							<Select bind:value={sortBy} label="Sort By" class="sort-select">
+								{#each sortOptions as option}
+									<Option value={option.value}>{option.label}</Option>
+								{/each}
+							</Select>
 						</div>
-						<Slider min={1900} max={2023} bind:value={releaseYear} />
-					</div>
-					<div class="filter-item">
-						<h6>Language:</h6>
-						<Set chips={languages} let:chip bind:selected={selectedLanguages} filter>
-							<Chip {chip}>
-								<Text tabindex={0}>{chip}</Text>
-							</Chip>
-						</Set>
-					</div>
-					<div class="filter-item">
-						<h6>Rental Rate: ${rentalRate}.00</h6>
-						<div class="slider-labels">
-							<span>$0.00</span>
-							<span>$100.00</span>
+					</Content>
+				</Panel>
+			</Accordion>
+		</div>
+		<div style="position: relative; z-index: 1;">
+			<Accordion>
+				<Panel bind:open={isFilterOpen}>
+					<Header
+						>Filters <IconButton slot="icon" toggle pressed={isFilterOpen}>
+							<Icon class="material-icons" on>expand_less</Icon>
+							<Icon class="material-icons">chevron_right</Icon>
+						</IconButton></Header
+					>
+					<Content>
+						<div class="filter-item">
+							<h6>Release Year: {releaseYear}</h6>
+							<div class="slider-labels">
+								<span>{1900}</span>
+								<span>{2023}</span>
+							</div>
+							<Slider min={1900} max={2023} bind:value={releaseYear} discrete tickMarks />
 						</div>
-						<Slider min={0} max={100} bind:value={rentalRate} />
-					</div>
-					<div class="filter-item">
-						<h6>Rating:</h6>
-						<Set chips={['G', 'PG', 'PG-13', 'R']} let:chip bind:selected={selectedRating} filter>
-							<Chip {chip}>
-								<Text tabindex={0}>{chip}</Text>
-							</Chip>
-						</Set>
-					</div>
-				</Content>
-			</Panel>
-		</Accordion>
+						<div class="filter-item">
+							<h6>Language:</h6>
+							<Set chips={languages} let:chip bind:selected={selectedLanguages} filter>
+								<Chip {chip}>
+									<Text tabindex={0}>{chip}</Text>
+								</Chip>
+							</Set>
+						</div>
+						<div class="filter-item">
+							<h6>Rental Rate: ${rentalRate}.00</h6>
+							<div class="slider-labels">
+								<span>$0.00</span>
+								<span>$100.00</span>
+							</div>
+							<Slider min={0} max={100} bind:value={rentalRate} />
+						</div>
+						<div class="filter-item">
+							<h6>Rating:</h6>
+							<Set chips={['G', 'PG', 'PG-13', 'R']} let:chip bind:selected={selectedRating} filter>
+								<Chip {chip}>
+									<Text tabindex={0}>{chip}</Text>
+								</Chip>
+							</Set>
+						</div>
+					</Content>
+				</Panel>
+			</Accordion>
+		</div>
 	</div>
 
 	<div class="dvd-grid">
@@ -148,9 +185,54 @@
 			</Paper>
 		{/each}
 	</div>
+
+	<!-- Pagination controls -->
+	<div class="pagination">
+		<Button on:click={() => goToPage(1)} disabled={currentPage === 1}>
+			<Icon class="material-icons">first_page</Icon>
+		</Button>
+		<Button on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+			<Icon class="material-icons">chevron_left</Icon>
+		</Button>
+		<span>Page {currentPage} of {totalPages}</span>
+		<Button on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+			<Icon class="material-icons">chevron_right</Icon>
+		</Button>
+		<Button on:click={() => goToPage(totalPages)} disabled={currentPage === totalPages}>
+			<Icon class="material-icons">last_page</Icon>
+		</Button>
+	</div>
 </div>
 
 <style>
+	.sort-select-wrapper {
+		position: relative;
+		z-index: 1000;
+	}
+
+	:global(.sort-select) {
+		position: relative;
+		z-index: 1000 !important;
+	}
+
+	:global(.mdc-select__menu) {
+		position: absolute;
+		z-index: 1001 !important;
+	}
+
+	:global(.mdc-menu-surface) {
+		z-index: 1002 !important;
+	}
+
+	:global(.mdc-accordion) {
+		position: relative;
+		z-index: 1;
+	}
+
+	:global(.sort-select) {
+		width: 100%;
+	}
+
 	:global(.dvd-container) {
 		padding: 0 !important;
 	}
@@ -203,5 +285,17 @@
 		display: flex;
 		justify-content: space-between;
 		margin-bottom: 8px;
+	}
+	.pagination {
+		grid-column: 2;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 50px 0;
+		gap: 10px;
+	}
+
+	.pagination span {
+		margin: 0 10px;
 	}
 </style>

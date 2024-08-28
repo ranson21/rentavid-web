@@ -4,6 +4,7 @@
 	import { capitalize } from '$lib/utils/format';
 	import { routeToPage } from '$lib/utils/common';
 
+	export let width = 220;
 	export let dvdId;
 	export let hideTitle = false;
 	export let title = 'DVD Title';
@@ -12,7 +13,7 @@
 	export let releaseYear = '2023';
 </script>
 
-<Card style="height: 220px; width: 130px">
+<Card style="height: 220px; width: {width}px">
 	<PrimaryAction class="dvd-card" on:click={() => routeToPage(`films/${dvdId}`)}>
 		<Media style="background-image: url({imageUrl}); height:100%" aspectRatio="16x9"></Media>
 	</PrimaryAction>

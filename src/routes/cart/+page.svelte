@@ -7,6 +7,9 @@
 	import Button, { Label } from '@smui/button';
 	import RentButton from '$lib/components/RentButton.svelte';
 
+	import { capitalize } from '$lib/utils/format';
+	import DvdTitle from '$lib/components/DVDTitle.svelte';
+
 	let updateTrigger = 0;
 	let isLoading = true;
 
@@ -164,9 +167,17 @@
 			<div class="suggested-films-list">
 				{#each suggestedFilms as film (film.film_id)}
 					<div class="suggested-item">
-						<img src={film.poster_path} alt={film.title} class="suggested-item-image" />
+						<DvdTitle
+							hideTitle
+							width={600}
+							dvdId={film.film_id}
+							title={film.title}
+							description={film.description}
+							imageUrl={film.poster_path}
+							releaseYear={film.release_year}
+						/>
 						<div class="suggested-item-details">
-							<h3 class="suggested-item-title">{film.title}</h3>
+							<h3 class="suggested-item-title">{capitalize(film.title)}</h3>
 							<p class="suggested-item-description">{film.description}</p>
 							<p class="suggested-item-rental">
 								${film.rental_rate} for {film.rental_duration} days
@@ -282,11 +293,24 @@
 
 	.suggested-films {
 		width: 25%;
+		min-width: 350px;
 		padding-left: 1rem;
 		border-left: 1px solid #e2e8f0;
 		display: flex;
 		flex-direction: column;
 		height: calc(100vh - 64px);
+	}
+
+	.suggested-films::-webkit-scrollbar {
+		-webkit-appearance: none;
+	}
+
+	.suggested-films::-webkit-scrollbar:vertical {
+		width: 5px;
+	}
+
+	:global(.mdc-card) {
+		margin-right: 16px;
 	}
 
 	.suggested-films-list {
@@ -296,7 +320,7 @@
 
 	.suggested-item {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		margin-bottom: 1rem;
 		padding-bottom: 1rem;
 		border-bottom: 1px solid #e2e8f0;
@@ -330,7 +354,7 @@
 	.suggested-item-description {
 		font-size: 0.8rem;
 		color: #4a5568;
-		margin-bottom: 0.25rem;
+		margin: 0;
 	}
 
 	.suggested-item-rental {
