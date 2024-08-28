@@ -4,7 +4,7 @@
 	import { capitalize } from '$lib/utils/format';
 	import { routeToPage } from '$lib/utils/common';
 
-	export let width = 220;
+	export let width = 120;
 	export let dvdId;
 	export let hideTitle = false;
 	export let title = 'DVD Title';
