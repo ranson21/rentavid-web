@@ -4,8 +4,8 @@
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
 	import Icon from '@smui/textfield/icon';
-	import Logo from './Logo.svelte'; // Assume we have a Logo component
-	import { writable } from 'svelte/store';
+	import Logo from './Logo.svelte';
+	import { derived } from 'svelte/store';
 	import { page } from '$app/stores';
 	import { liveQuery } from 'dexie';
 	import Badge from '@smui-extra/badge';
@@ -13,26 +13,21 @@
 	import { db } from '$lib/utils/db';
 	import { routeToPage } from '$lib/utils/common';
 	import SearchBar from './SearchBar.svelte';
+	import { onMount } from 'svelte';
 
 	let searchQuery = '';
 
-	// Create a store for the current route
-	const currentRoute = writable($page.route.id);
-
-	// Function to update the current route
-	function updateRoute(path) {
-		currentRoute.set(path);
-	}
+	// Create a derived store for the current route
+	const currentRoute = derived(page, ($page) => $page.url.pathname);
 
 	// Array of navigation items
 	const navItems = [
 		{ path: '/', label: 'Home' },
-		{ path: 'browse', label: 'Browse' },
-		{ path: 'stores', label: 'Stores' }
+		{ path: '/browse', label: 'Browse' },
+		{ path: '/stores', label: 'Stores' }
 	];
 
 	function navToCart() {
-		updateRoute('');
 		routeToPage('cart');
 	}
 
@@ -41,6 +36,11 @@
 	let items = liveQuery(() => db.cart.toArray());
 	$: items.subscribe((item) => {
 		cartItemsCount = item.length;
+	});
+
+	onMount(() => {
+		console.log('navItems', navItems);
+		console.log('$currentRoute', $currentRoute);
 	});
 </script>
 
@@ -60,9 +60,8 @@
 					<div class="mdc-typography--button">
 						<a
 							href={item.path}
-							class:active={$currentRoute?.replaceAll('/', '') === item.path ||
+							class:active={$currentRoute === item.path ||
 								($currentRoute === '/' && item.path === '/')}
-							on:click={() => updateRoute(item.path)}
 						>
 							{item.label}
 						</a>
@@ -71,7 +70,7 @@
 			</div>
 			<div class="separator"></div>
 			<div class="cart-button-container">
-				<IconButton class="material-icons shopping-cart-button" on:click={() => navToCart()}
+				<IconButton class="material-icons shopping-cart-button" on:click={navToCart}
 					>shopping_cart</IconButton
 				>
 				{#if cartItemsCount > 0}
