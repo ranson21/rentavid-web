@@ -8,7 +8,7 @@
 	export let hideTitle = false;
 	export let title = 'DVD Title';
 	export let description = 'DVD Description';
-	export let imageUrl = 'https://via.placeholder.com/300x200';
+	export let imageUrl;
 	export let releaseYear = '2023';
 </script>
 
