@@ -7,6 +7,9 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
 	server: {
+		fs: {
+			allow: ['static']
+		},
 		host: '127.0.0.1',
 		proxy: {
 			'/api': {
