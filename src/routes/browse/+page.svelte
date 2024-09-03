@@ -67,7 +67,6 @@
 		// Example:
 		const res = await fetch(`/api/v1/films?${query.join('&')}`);
 		const data = await res.json();
-		console.log('data', data);
 		dvds = data.films;
 		totalItems = data.pagination.total_items;
 		totalPages = Math.ceil(totalItems / itemsPerPage);
