@@ -16,15 +16,16 @@
 	let languages = [];
 	let selectedLanguages = [];
 	let releaseYear = 2023;
-	let rentalRate = 10;
+	let rentalRate = 2;
 	let selectedRating = [];
 	let sortBy = 'title_asc';
 	let sortOptions = [
 		{ value: 'rating_desc', label: 'Rating (Desc)' },
 		{ value: 'rating_asc', label: 'Rating (Asc)' },
-		{ value: 'release_year_desc', label: 'Release Year (Desc)' },
-		{ value: 'release_year_asc', label: 'Release Year (Asc)' },
-		{ value: 'title_asc', label: 'Title (A-Z)' }
+		{ value: 'releaseYear_desc', label: 'Release Year (Desc)' },
+		{ value: 'releaseYear_asc', label: 'Release Year (Asc)' },
+		{ value: 'title_asc', label: 'Title (A-Z)' },
+		{ value: 'title_desc', label: 'Title (Z-A)' }
 	];
 
 	// Pagination variables
@@ -43,11 +44,28 @@
 	});
 
 	async function fetchDvds() {
+		let query = [`sort=${sortBy}`, `page=${currentPage}`, `limit=${itemsPerPage}`];
+
+		// Apply the filters to the query params
+		if (releaseYear) {
+			query.push(`releaseYear=${releaseYear}`);
+		}
+
+		if (selectedLanguages.length) {
+			query.push(`languages=${selectedLanguages.map((l) => l.trim()).join(',')}`);
+		}
+
+		if (selectedRating.length) {
+			query.push(`rating=${selectedRating.join(',')}`);
+		}
+
+		if (rentalRate) {
+			query.push(`rentalRate=${rentalRate}`);
+		}
+
 		// Replace with your API call to fetch DVDs based on filters, sort order, and pagination
 		// Example:
-		const res = await fetch(
-			`/api/v1/films?releaseYear=${releaseYear}${selectedLanguages.length ? '&languages=' + selectedLanguages.join(',') : ''}&rentalRate=${rentalRate}${selectedRating.length ? '&rating=' + selectedRating.join(',') : ''}&sort=${sortBy}&page=${currentPage}&limit=${itemsPerPage}`
-		);
+		const res = await fetch(`/api/v1/films?${query.join('&')}`);
 		const data = await res.json();
 		console.log('data', data);
 		dvds = data.films;
@@ -137,10 +155,10 @@
 						<div class="filter-item">
 							<h6>Rental Rate: ${rentalRate}.00</h6>
 							<div class="slider-labels">
-								<span>$0.00</span>
-								<span>$100.00</span>
+								<span>$1.00</span>
+								<span>$10.00</span>
 							</div>
-							<Slider min={0} max={100} bind:value={rentalRate} />
+							<Slider min={1} max={10} bind:value={rentalRate} />
 						</div>
 						<div class="filter-item">
 							<h6>Rating:</h6>
